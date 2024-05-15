@@ -22,6 +22,10 @@ def remove_punctuation(text):
     regular_punct = string.punctuation
     return str(re.sub(r'['+regular_punct+']', '', str(text)))
 
+# Function to convert the text into lower case
+def lower_case(text):
+    return text.lower()
+
 # Function to lemmatize text
 def lemmatize(text):
     wordnet_lemmatizer = WordNetLemmatizer()
@@ -30,11 +34,8 @@ def lemmatize(text):
     lemma_txt = ''
     for w in tokens:
         lemma_txt = lemma_txt + wordnet_lemmatizer.lemmatize(w) + ' '
-    return lemma_txt
 
-# Function to convert the text into lower case
-def lower_case(text):
-    return text.lower()
+    return lemma_txt
 
 def preprocess_text(text):
     # Preprocess the input text
@@ -44,7 +45,7 @@ def preprocess_text(text):
     text = lemmatize(text)
     return text
 
-# Load the model using FastAPI lifespan event so that the model is loaded at the beginning for efficiency
+# Load the model using FastAPI lifespan event so that teh model is loaded at the beginning for efficiency
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the model from HuggingFace transformers library
@@ -55,8 +56,14 @@ async def lifespan(app: FastAPI):
     # Clean up the model and release the resources
     del sentiment_task
 
+description = """
+## Text Classification API 
+This app shows the sentiment of the text (positive, negative, or neutral).
+Check out the docs for the `/analyze/{text}` endpoint below to try it out!
+"""
+
 # Initialize the FastAPI app
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, docs_url="/", description=description)
 
 # Define the input data model
 class TextInput(BaseModel):
@@ -65,13 +72,13 @@ class TextInput(BaseModel):
 # Define the welcome endpoint
 @app.get('/')
 async def welcome():
-    return "Text Classification API"
+    return "Welcome to our Text Classification API"
 
 # Validate input text length
 MAX_TEXT_LENGTH = 1000
 
 # Define the sentiment analysis endpoint 
-@app.post('/input/{text}')
+@app.post('/analyze/{text}')
 async def classify_text(text_input:TextInput):    
     try:
         # Convert input data to JSON serializable dictionary
