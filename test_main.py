@@ -10,20 +10,20 @@ def test_welcome():
     # Test the welcome endpoint
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == "Welcome to our Text Classification API"
+    assert response.json() == "Text Classification API"
 
 # Test the sentiment analysis endpoint for positive sentiment
 def test_positive_sentiment():
     with client:
         # Define the request payload 
         # Initialize payload as a TextInput object
-        payload = TextInput(text="I love this product! It's amazing!")
+        payload = TextInput(text="I love to watch horror and Si-Fi movies! It's amazing!")
 
         # Convert TextInput object to JSON-serializable dictionary
         payload_dict = jsonable_encoder(payload)
         
         # Send a POST request to the sentiment analysis endpoint
-        response = client.post("/analyze/{text}", json=payload_dict)
+        response = client.post("/input/{text}", json=payload_dict)
 
         # Assert that the response status code is 200 OK
         assert response.status_code == 200
@@ -36,13 +36,13 @@ def test_negative_sentiment():
     with client:
         # Define the request payload 
         # Initialize payload as a TextInput object
-        payload = TextInput(text="I'm really disappointed with this service. It's terrible.")
+        payload = TextInput(text="I'm not satisfied by this movie. It's terrible.")
 
         # Convert TextInput object to JSON-serializable dictionary
         payload_dict = jsonable_encoder(payload)
         
         # Send a POST request to the sentiment analysis endpoint
-        response = client.post("/analyze/{text}", json=payload_dict)
+        response = client.post("/input/{text}", json=payload_dict)
 
         # Assert that the response status code is 200 OK
         assert response.status_code == 200

@@ -17,15 +17,6 @@ from nltk.stem import WordNetLemmatizer
 def remove_urls(text):
     return re.sub(r'http[s]?://\S+', '', text)
 
-# Function to remove punctuations from text
-def remove_punctuation(text):
-    regular_punct = string.punctuation
-    return str(re.sub(r'['+regular_punct+']', '', str(text)))
-
-# Function to convert the text into lower case
-def lower_case(text):
-    return text.lower()
-
 # Function to lemmatize text
 def lemmatize(text):
     wordnet_lemmatizer = WordNetLemmatizer()
@@ -34,8 +25,16 @@ def lemmatize(text):
     lemma_txt = ''
     for w in tokens:
         lemma_txt = lemma_txt + wordnet_lemmatizer.lemmatize(w) + ' '
-
     return lemma_txt
+
+# Function to remove punctuations from text
+def remove_punctuation(text):
+    regular_punct = string.punctuation
+    return str(re.sub(r'['+regular_punct+']', '', str(text)))
+
+# Function to convert the text into lower case
+def lower_case(text):
+    return text.lower()
 
 def preprocess_text(text):
     # Preprocess the input text
@@ -57,9 +56,9 @@ async def lifespan(app: FastAPI):
     del sentiment_task
 
 description = """
-## Text Classification API 
-This app shows the sentiment of the text (positive, negative, or neutral).
-Check out the docs for the `/analyze/{text}` endpoint below to try it out!
+## This API provides text classification capabilities using a pre-trained model for sentiment analysis. 
+It allows users to analyze the sentiment of text inputs and obtain the corresponding sentiment labels.
+Check out the docs for the `/input/{text}` endpoint below to try it out!
 """
 
 # Initialize the FastAPI app
@@ -78,7 +77,7 @@ async def welcome():
 MAX_TEXT_LENGTH = 1000
 
 # Define the sentiment analysis endpoint 
-@app.post('/analyze/{text}')
+@app.post('/input/{text}')
 async def classify_text(text_input:TextInput):    
     try:
         # Convert input data to JSON serializable dictionary
